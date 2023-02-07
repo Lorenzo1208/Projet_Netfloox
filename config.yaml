@@ -1,0 +1,13 @@
+mysql:
+  host: greta-p2-g5.westeurope.cloudapp.azure.com
+  user: root
+  password: greta2023
+  driver: mysql
+  database: netfloox
+
+PG:
+  host: greta-p2-g0.westeurope.cloudapp.azure.com
+  user: postgres
+  password: greta2023
+  database: test
+  driver: postgresql+psycopg2
