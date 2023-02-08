@@ -3,7 +3,7 @@ mysql:
   user: root
   password: greta2023
   driver: mysql
-  database: netfloox
+  database: bdd_lorenzo
 
 PG:
   host: greta-p2-g0.westeurope.cloudapp.azure.com

@@ -19,18 +19,26 @@ print('URL', url)
 engine = create_engine(url)
 
 # Permet de lire les fichiers tsv depuis l'url et les stockent dans des dataframes puis envoie les dataframes dans la base de données
-def read_and_store_tsv(url, file_name, engine, nrows=1000):
-    df = pd.read_csv(url, compression='gzip', sep='\t', nrows=nrows)
-    df.to_sql(file_name, engine, if_exists='replace')
+def read_and_store_tsv(url, file_name, engine, nrows=10000, chunksize=10000):
+    chunks = pd.read_csv(url, compression='gzip', sep='\t', nrows=nrows, chunksize=chunksize, low_memory=False)
+    for chunk in chunks:
+        chunk.to_sql(file_name, engine, if_exists='replace', index=False)
+
 # liste des fichiers tsv à télécharger
 files = [
-    ('https://datasets.imdbws.com/name.basics.tsv.gz', 'names'),
-    ('https://datasets.imdbws.com/title.akas.tsv.gz', 'title_akas'),
-    ('https://datasets.imdbws.com/title.basics.tsv.gz', 'title_basics'),
-    ('https://datasets.imdbws.com/title.crew.tsv.gz', 'title_crew'),
-    ('https://datasets.imdbws.com/title.episode.tsv.gz', 'title_episode'),
-    ('https://datasets.imdbws.com/title.principals.tsv.gz', 'title_principals'),
-    ('https://datasets.imdbws.com/title.ratings.tsv.gz', 'title_ratings'),
+    ('name.basics.tsv.gz', 'names'),
+    ('title.basics.tsv.gz', 'title_basics'),
+    ('title.principals.tsv.gz', 'title_principals'),
+    ('title.ratings.tsv.gz', 'title_ratings'),
+    ('title.episode.tsv.gz', 'title_episode'),
+    ('title.crew.tsv.gz', 'title_crew'),
+    ('title.akas.tsv.gz', 'title_akas')
+    # ('https://datasets.imdbws.com/title.akas.tsv.gz', 'title_akas'),
+    # ('https://datasets.imdbws.com/title.basics.tsv.gz', 'title_basics'),
+    # ('https://datasets.imdbws.com/title.crew.tsv.gz', 'title_crew'),
+    # ('https://datasets.imdbws.com/title.episode.tsv.gz', 'title_episode'),
+    # ('https://datasets.imdbws.com/title.principals.tsv.gz', 'title_principals'),
+    # ('https://datasets.imdbws.com/title.ratings.tsv.gz', 'title_ratings'),
 ]
 # boucle pour lire et stocker les fichiers tsv dans la base de données
 for url, file_name in files:
