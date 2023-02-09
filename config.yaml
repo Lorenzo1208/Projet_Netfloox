@@ -3,7 +3,7 @@ mysql:
   user: root
   password: greta2023
   driver: mysql
-  database: bdd_lorenzo_test
+  database: bdd_all
 
 PG:
   host: greta-p2-g0.westeurope.cloudapp.azure.com
@@ -11,3 +11,17 @@ PG:
   password: greta2023
   database: test
   driver: postgresql+psycopg2
+
+PG-datalab:
+  host: 127.0.0.1
+  user: user
+  password: (celui déjà fourni) 
+  database: user
+  driver: postgresql+psycopg2
+
+mysql-datalab:
+  host: 127.0.0.1
+  user: gurgoglione
+  password: f946c9aa6f3385c666a4f527a2b8ec667b5669792af488ae9e83a312c6f7b053
+  database: p2ia_gurgoglione
+  driver: mysql
