@@ -13,7 +13,7 @@ with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 # la variable cfg contient la partie mysql du fichier yaml
-cfg=config['mysql-datalab']
+cfg=config['mysql2']
 print(cfg)
 
 # création de l'url de connexion à la base de données
@@ -26,7 +26,7 @@ engine = create_engine(url)
 def split_et_explode(x):
     return x.split(",") if x else None
 
-def read_and_store_tsv(url, file_name, engine, nrows=1000, chunksize=1000):
+def read_and_store_tsv(url, file_name, engine, nrows=10000, chunksize=10000):
     chunks = pd.read_csv(url, compression='gzip', sep='\t', nrows=nrows, chunksize=chunksize, low_memory=False)
     for chunk in chunks:
         chunk = chunk.applymap(lambda x: None if x == r'\N' else x)
@@ -41,8 +41,20 @@ def read_and_store_tsv(url, file_name, engine, nrows=1000, chunksize=1000):
                 directors_df["directors"] = chunk["directors"].apply(split_et_explode)
                 directors_df = directors_df.explode("directors")
                 directors_df.to_sql("directors", engine, if_exists='replace', index=False)
+        elif file_name == "names":
+            if "knownForTitles" in chunk.columns:
+                knownfortitles_df = chunk[['nconst', 'knownForTitles']]
+                knownfortitles_df["knownForTitles"] = chunk["knownForTitles"].apply(split_et_explode)
+                knownfortitles_df = knownfortitles_df.explode("knownForTitles")
+                knownfortitles_df.to_sql("knownfortitles", engine, if_exists='replace', index=False)
+            if "primaryProfession" in chunk.columns:
+                primaryprofession_df = chunk[['nconst','primaryName','birthYear','deathYear','primaryProfession']]
+                primaryprofession_df["nconst"] = chunk["nconst"].apply(split_et_explode)
+                primaryprofession_df = primaryprofession_df.explode("nconst")
+                primaryprofession_df.to_sql("names", engine, if_exists='replace', index=False)
+        
         else:
-            chunk.to_sql(file_name, engine, if_exists='replace', index=False)
+            chunk.to_sql(file_name, engine, if_exists='append', index=False)
 
 
 # liste des fichiers tsv à télécharger
