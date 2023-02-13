@@ -3,14 +3,14 @@ mysql:
   user: root
   password: greta2023
   driver: mysql
-  database: test
+  database: bdd_all
 
 mysql2:
   host: localhost
   user: root
   password: root
   driver: mysql
-  database: bdd_test
+  database: bdd
 
 
 PG:
