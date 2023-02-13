@@ -41,20 +41,31 @@ WHERE directors IS NULL;
 
 ALTER TABLE bdd.directors ADD CONSTRAINT directors_pk PRIMARY KEY (tconst,directors);
 
+SELECT directors
+FROM bdd.directors
+WHERE directors IS NULL;
+
 DELETE FROM bdd.knownfortitles
+WHERE knownfortitles IS NULL;
+
+SELECT knownfortitles
+FROM bdd.knownfortitles
 WHERE knownfortitles IS NULL;
 
 ALTER TABLE bdd.knownfortitles ADD CONSTRAINT knownfortitles_pk PRIMARY KEY (nconst,knownForTitles);
 
 ALTER TABLE bdd.names ADD CONSTRAINT names_pk PRIMARY KEY (nconst);
+
 ALTER TABLE bdd.title_akas ADD CONSTRAINT title_akas_pk PRIMARY KEY (titleId,`ordering`);
+
 ALTER TABLE bdd.title_basics ADD CONSTRAINT title_basics_pk PRIMARY KEY (tconst);
+
 ALTER TABLE bdd.title_episode ADD CONSTRAINT title_episode_pk PRIMARY KEY (tconst);
+
 ALTER TABLE bdd.title_principals ADD CONSTRAINT title_principals_pk PRIMARY KEY (tconst,`ordering`);
+
 ALTER TABLE bdd.title_ratings ADD CONSTRAINT title_ratings_pk PRIMARY KEY (tconst);
 
 DELETE FROM bdd.writers WHERE writers  IS NULL;
 
 ALTER TABLE bdd.writers ADD CONSTRAINT writers_pk PRIMARY KEY (tconst,writers);
-ALTER TABLE bdd.names ADD CONSTRAINT names_FK FOREIGN KEY (nconst,nconst) REFERENCES bdd.title_principals(tconst,`ordering`);
-ALTER TABLE bdd.title_principals ADD CONSTRAINT title_principals_un UNIQUE KEY (tconst,nconst);
