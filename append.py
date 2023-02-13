@@ -12,7 +12,7 @@ with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 #print(config)
 
-cfg=config['mysql2']
+cfg=config['mysql']
 print(cfg)
 
 url = "{driver}://{user}:{password}@{host}/{database}".format(**cfg)
@@ -23,17 +23,18 @@ engine = create_engine(url)
 files=['name.basics', 'title.crew']
 
 def split_and_explode(x):
+    x = str(x) if not isinstance(x, str) else x
     return x.split(",") if x else None
 
 for name in files:
     print(f"Loading {name}")
-    df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=None, na_values=('\\N', 'N'), quoting=3)
-    print(df.shape)
+    df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=1000, quoting=3)
+    df = df.applymap(lambda x: '' if x == r'\N' else x)
     table_name = name.replace('.', '_')
-    df.to_sql(table_name, engine, if_exists='append', index=False)
-
-    if name == "title_crew":
+    # df.to_sql(table_name, engine, if_exists='append', index=False)
+    if table_name == "title_crew":
         if "writers" in df.columns:
+            print(df.shape)
             writers_df = df[['tconst', 'writers']]
             writers_df["writers"] = df["writers"].apply(split_and_explode)
             writers_df = writers_df.explode("writers")
@@ -43,7 +44,7 @@ for name in files:
             directors_df["directors"] = df["directors"].apply(split_and_explode)
             directors_df = directors_df.explode("directors")
             directors_df.to_sql("directors", engine, if_exists='append', index=False)
-    elif name == "names":
+    elif table_name == "names_basics":
         if "knownForTitles" in df.columns:
             knownfortitles_df = df[['nconst', 'knownForTitles']]
             knownfortitles_df["knownForTitles"] = df["knownForTitles"].apply(split_and_explode)

@@ -3,7 +3,7 @@ mysql:
   user: root
   password: greta2023
   driver: mysql
-  database: testEG
+  database: test
 
 mysql2:
   host: localhost

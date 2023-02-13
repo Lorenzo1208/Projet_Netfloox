@@ -13,7 +13,7 @@ with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 # la variable cfg contient la partie mysql du fichier yaml
-cfg=config['mysql2']
+cfg=config['mysql']
 print(cfg)
 
 # création de l'url de connexion à la base de données
@@ -26,7 +26,7 @@ engine = create_engine(url)
 def split_et_explode(x):
     return x.split(",") if x else None
 
-def read_and_store_tsv(url, file_name, engine, nrows=10000, chunksize=10000):
+def read_and_store_tsv(url, file_name, engine, nrows=1000, chunksize=1000):
     chunks = pd.read_csv(url, compression='gzip', sep='\t', nrows=nrows, chunksize=chunksize, low_memory=False)
     for chunk in chunks:
         chunk = chunk.applymap(lambda x: None if x == r'\N' else x)
