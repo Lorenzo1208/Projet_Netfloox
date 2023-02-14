@@ -10,7 +10,7 @@ def get_config():
     return config
 
 def create_engine_from_config(config):
-    cfg = config['mysql']
+    cfg = config['mysql2']
     return create_engine("{driver}://{user}:{password}@{host}/{database}".format(**cfg))
 
 def get_data(engine, query):
@@ -27,14 +27,26 @@ def plot_data(df):
     plt.ylabel("Count")
     plt.title("Count of Names by Birth Year")
     plt.show()
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 def main():
     config = get_config()
     engine = create_engine_from_config(config)
-    query = text("""SELECT * FROM title_basics;""")
+    query = text("""SELECT tconst, writers
+                    FROM bdd.writers
+                    WHERE writers = 'None' LIMIT 10;""")
+    
     query2 = text("""SELECT birthYear, count(*) AS N FROM names GROUP BY birthYear;""")
-    df = get_data(engine, query2)
-    plot_data(df)
-
+    
+    query3 = text("""SELECT tconst, writers
+                    FROM bdd.writers
+                    WHERE tconst IS NOT NULL AND writers IS NULL;
+                    """)
+    
+    
+    df = get_data(engine, query)
+    # plot_data(df)
+    print(df.head(10))
+    
+    
 if __name__ == '__main__':
     main()

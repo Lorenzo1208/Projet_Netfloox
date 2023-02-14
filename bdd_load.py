@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 def split_and_explode(x):
     x = str(x) if not isinstance(x, str) else x
-    return x.split(",") if x else np.nan
+    return x.split(",") if x else None
 
 if __name__ == "__main__":
     
@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
     for name in files:
         print(f"Loading {name}")
-        df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=None, quoting=3)
+        df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=None, quoting=3, low_memory=False)
         # df = df.where((pd.notnull(df)), None)
-        df = df.applymap(lambda x: np.nan if x == r'\N' else x)
+        df = df.applymap(lambda x: None if x == r'\N' else x)
         table_name = name.replace('.', '_')
         # df.to_sql(table_name, engine, if_exists='append', index=False)
         if table_name == "title_crew":
