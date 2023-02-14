@@ -1,3 +1,4 @@
 
 config.yaml
 *.gz
+data.csv
