@@ -27,6 +27,11 @@ def plot_data(df):
     plt.ylabel("Count")
     plt.title("Count of Names by Birth Year")
     plt.show()
+
+def load_csv():
+    df = pd.read_csv('data_movie_2000.csv')
+    unique_tconst = df['tconst'].nunique()
+    print(f" {unique_tconst} : Films")
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 def main():
     
@@ -73,23 +78,67 @@ def main():
                  ON title_basics.tconst = writers.tconst 
                  
                  WHERE title_basics.titleType = 'movie' AND title_basics.startYear > 2000
-                
+                Limit 1000000
                  ;
-                    """)
+                """)
     
     #634638 movies
     query5 = text("""SELECT COUNT(*) FROM title_basics WHERE titleType = 'movie';""")
+    
+    query6 = text("""SELECT t1.nconst, t1.tconst, t1.category,
+                  t3.writers, t3.directors, t4.nconst, t4.knownForTitles,
+                  
+                  FROM title_principals AS t1
+                  
+                  INNER JOIN title_crew AS t3
+                  ON t1.tconst = t3.tconst
+                  
+                  INNER JOIN title_basics AS t2
+                  ON t1.tconst = t2.tconst
+                  
+                  INNER JOIN name_basics AS t4
+                  ON t1.tconst = t4.tconst
+                  
+                  WHERE t2.startYear > 2000
+                 LIMIT 50;""")
 
-    df = get_data(engine, query4)
+    #def concat_features(row):
+    #    return row['genres'].replace(',','') + ' ' + row['directors'].replace(' ','')
+    # df['features'] = df.apply(concat_features, axis=1)
+    
+    df = get_data(engine, query5)
     # df_movies = df[df['titleType'] == 'movie']
+    # regrouper par tconst et sélectionner la première valeur non-nulle de writers et directors
+    # df_grouped = df.groupby('tconst').agg({'knownForTitles': lambda x: next((i for i in x if i is not None), None),
+    #                                     'directors': lambda x: next((i for i in x if i is not None), None)})
 
+    # # renommer les colonnes
+    # df_grouped = df_grouped.rename(columns={'writers': 'writers1', 'directors': 'directors1'})
+    print(df.head(10))
     # df2 = get_data(engine, query3)
     # plot_data(df)
-    
-    print(df.head(10))
-    print(df.columns)
-    df.to_csv('data.csv')
+
+    # print the resulting dataframe
+    # print(df.head(10))
+    # print(df.columns)
+    # df.to_csv('data_movie_2000.csv')
     # print(df2.head(10))
+    # load_csv()
+    
+    # # pivot the table to create new columns for each category and the corresponding nconst values
+    # df_pivoted = df.pivot_table(index='tconst', columns='category', values='nconst', aggfunc='first')
+
+    # # reset the index to keep tconst as a regular column
+    # df_pivoted = df_pivoted.reset_index()
+
+    # # add a prefix to the column names to indicate the category
+    # df_pivoted = df_pivoted.add_prefix('category_')
+
+    # # rename the 'tconst' column to match the original DataFrame
+    # df_pivoted = df_pivoted.rename(columns={'category_tconst': 'tconst'})
+    
+    # print(df_pivoted.head(20))
+    # df_pivoted.to_csv('data_pivoted.csv')
     
 if __name__ == '__main__':
     main()
