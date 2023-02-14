@@ -49,3 +49,7 @@ ALTER TABLE bdd.title_principals ADD CONSTRAINT title_principals_pk PRIMARY KEY 
 ALTER TABLE bdd.title_ratings ADD CONSTRAINT title_ratings_pk PRIMARY KEY (tconst);
 DELETE FROM bdd.writers WHERE writers  IS NULL;
 ALTER TABLE bdd.writers ADD CONSTRAINT writers_pk PRIMARY KEY (tconst,writers);
+CREATE INDEX index_tconst ON title_basics (tconst);
+CREATE INDEX index_tconst ON title_principals (tconst);
+CREATE INDEX index_nconst ON names (nconst);
+CREATE INDEX index_titleId ON title_akas (titleId);
