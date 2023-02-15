@@ -3,3 +3,4 @@ config.yaml
 *.gz
 data.csv
 output.csv
+*.csv

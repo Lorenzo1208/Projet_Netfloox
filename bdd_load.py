@@ -37,7 +37,7 @@ if __name__ == "__main__":
     
     for name in files:
         print(f"Loading {name}")
-        df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=100, quoting=3, low_memory=False)
+        df = pd.read_csv(f"{name}.tsv.gz", sep='\t', compression='gzip', nrows=None, quoting=3, low_memory=False)
         # df = df.where((pd.notnull(df)), None)
         df = df.applymap(lambda x: None if x == r'\N' else x)
         table_name = name.replace('.', '_')
