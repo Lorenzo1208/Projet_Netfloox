@@ -2,12 +2,15 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression, SGDRegressor, Lasso, ElasticNet, Ridge
+from sklearn.svm import LinearSVC, SVC
 from sklearn.preprocessing import OneHotEncoder, RobustScaler
 from sklearn.impute import KNNImputer, SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import fbeta_score
+from sklearn.decomposition import PCA
 import pickle
 import joblib
 import random
@@ -23,42 +26,49 @@ def train_model(csv_file):
     X = df.drop(columns='averageRating')
     y = df['averageRating']
 
+    # Recodage des variables catégorielles avant la PCA
     transfo_cat = Pipeline(steps=[
-        ('imputation', SimpleImputer(strategy='most_frequent')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))
-    ])
-
-    transfo_num = Pipeline(steps=[
-        ('imputation', KNNImputer(n_neighbors=3, weights="uniform")),
-        ('scaling', RobustScaler())
+        ('encoding', OneHotEncoder(handle_unknown='ignore', sparse=False))
     ])
 
     preparation = ColumnTransformer(
         transformers=[
             ('data_cat', transfo_cat, X.select_dtypes(include=['object']).columns),
-            ('data_num', transfo_num, X.select_dtypes(exclude=['object']).columns)
+            ('data_num', PCA(n_components=2), X.select_dtypes(exclude=['object']).columns),
+            ('imputer', KNNImputer(n_neighbors=3, weights="uniform"), X.columns),
+            ('scaler', RobustScaler(), X.columns)
         ])
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=2, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
     return X_train, X_test, y_train, y_test, preparation
+
 
 def train_models(X_train, X_test, y_train, y_test, preparation):
     # Liste des modèles à entraîner
     models = [
         KNeighborsClassifier(),
-        RandomForestClassifier()
+        RandomForestClassifier(),
+        # LinearSVC(max_iter=10000),
+        # SVC()
     ]
 
     # Liste des grilles de paramètres à tester pour chaque modèle
     grid_params = [
-        {'model__n_neighbors': [1, 3, 5], 'model__p': [1]},
-        {'model__n_estimators': [50, 100], 'model__max_depth': [5, None]}
+        # {'model__n_neighbors': [1, 5], 'model__p': [1]},
+        # {'model__n_estimators': [10], 'model__max_depth': [10]},
+        # {'model__C': [0.1, 1], 'model__loss': ['hinge', 'squared_hinge']},
+        # {'model__C': [0.1, 1], 'model__kernel': ['linear', 'rbf'], 'model__gamma': ['scale', 'auto']}
     ]
 
     random_params = [
-        {'model__n_neighbors': [1, 3, 5], 'model__p': [1, 2]},
-        {'model__n_estimators': [50, 100], 'model__max_depth': [5, None], 'model__min_samples_split': [2, 5]}
+        # {'model__n_neighbors': [1, 5], 'model__p': [1]},
+        # {'model__n_estimators': [10], 'model__max_depth': [10]},
+        
+        {'model__n_neighbors': [1, 3, 5, 7, 9, 11], 'model__p': [1, 2]},
+        {'model__n_estimators': [10, 50, 100, 200], 'model__max_depth': [5, 10, 20, 30]},
+        # {'model__C': [0.1, 1], 'model__loss': ['hinge', 'squared_hinge']},
+        # {'model__C': [0.1, 1], 'model__kernel': ['linear', 'rbf'], 'model__gamma': ['scale', 'auto']}
     ]
 
     # Fonction pour choisir la méthode d'optimisation des hyperparamètres
@@ -76,11 +86,11 @@ def train_models(X_train, X_test, y_train, y_test, preparation):
         pipeline = Pipeline(steps=[('preparation', preparation), ('model', model)])
 
         # Choix de la méthode d'optimisation des hyperparamètres
-        search_method = get_search('grid')
+        search_method = get_search('random')
 
         # Modification aléatoire de la méthode de recherche
-        if random.random() < 0.5:
-            search_method = get_search('random')
+        # if random.random() < 0.5:
+        #     search_method = get_search('random')
 
         # Entraînement du modèle avec l'optimisation des hyperparamètres
         if search_method == GridSearchCV:
@@ -88,7 +98,8 @@ def train_models(X_train, X_test, y_train, y_test, preparation):
         else:
             search_params = random_params[i]
 
-        search = search_method(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1)
+        search = RandomizedSearchCV(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1, n_iter=12)
+        # search = search_method(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1)
         search.fit(X_train, y_train)
 
         y_pred = search.predict(X_test)
@@ -127,14 +138,14 @@ def main():
 
     # Entraînement du modèle
     
-    # X_train, X_test, y_train, y_test, preparation = train_model(csv_file)
-    # results = train_models(X_train, X_test, y_train, y_test, preparation)
+    X_train, X_test, y_train, y_test, preparation = train_model(csv_file)
+    results = train_models(X_train, X_test, y_train, y_test, preparation)
 
     # Affichage des scores et des meilleurs paramètres de chaque modèle
     
-    # for model, best_params, score in results:
-    #     print(f'{model.__class__.__name__} best parameters: {best_params}')
-    #     print(f'{model.__class__.__name__} test score: {score:.4f}\n')
+    for model, best_params, score in results:
+        print(f'{model.__class__.__name__} best parameters: {best_params}')
+        print(f'{model.__class__.__name__} test score: {score:.4f}\n')
 
     # Prédiction d'une note moyenne
     test_data = pd.DataFrame({
