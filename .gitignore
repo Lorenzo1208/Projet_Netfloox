@@ -5,3 +5,5 @@ data.csv
 output.csv
 *.csv
 azeazeaz.py
+*.csv
+*.pkl

@@ -1,6 +1,9 @@
 import yaml
 import pandas as pd
 from sqlalchemy import create_engine, text
+import time
+
+start_time = time.time()
 
 def read_config():
     with open("config.yaml", 'r') as ymlfile:
@@ -13,10 +16,20 @@ def connect_to_database(config):
     return conn
 
 def get_data(conn):
-    query = text('''SELECT tb.tconst, tb.genres, tp.nconst, tp.category, tb.runtimeMinutes, tb.startYear, tb.originalTitle
+    query = text('''SELECT tb.tconst, tb.genres, tp.nconst, tp.category, tb.runtimeMinutes, tb.startYear, tb.originalTitle, tr.averageRating
                     FROM title_basics tb
                     LEFT JOIN title_principals tp ON tb.tconst = tp.tconst
+                    LEFT JOIN title_ratings tr ON tb.tconst = tr.tconst
                     WHERE tb.titleType = 'movie' AND tb.genres IS NOT NULL AND tp.category IN ('director', 'actor')''')
+    
+    # query = text('''SELECT tb.tconst, tb.genres, tp.nconst, tp.category, tb.runtimeMinutes, tb.startYear, tb.originalTitle, tr.averageRating, tr.numVotes
+    #                 FROM title_basics tb
+    #                 LEFT JOIN title_principals tp ON tb.tconst = tp.tconst
+    #                 LEFT JOIN title_ratings tr ON tb.tconst = tr.tconst
+    #                 WHERE tb.titleType = 'movie' AND tb.genres IS NOT NULL AND tp.category IN ('director', 'actor')
+    #                 AND tr.averageRating IS NOT NULL AND tr.numVotes >= 1000
+    #                 ORDER BY tr.averageRating DESC, tr.numVotes DESC
+    #                 ''')
     
     df = pd.read_sql(query, conn)
     return df
@@ -33,7 +46,7 @@ def concat_names(group):
     else:
         return ''
 
-def create_features(df):
+def create_features_cosine(df):
     df = df[['tconst', 'originalTitle', 'genres', 'category', 'nconst']]
     df = df.dropna()
     # Prend le premier genre
@@ -53,20 +66,37 @@ def create_features(df):
     
     return result
 
+def create_features_knn(df):
+    df = df[['tconst','originalTitle', 'genres', 'category', 'nconst', 'runtimeMinutes', 'startYear', 'averageRating']]
+    print(df.head())
+    df = df.dropna()
+    df_agg = df.groupby(['originalTitle', 'genres','runtimeMinutes', 'startYear','averageRating']).apply(concat_names).reset_index(name='actor_director')
+    df_agg[['actor', 'director']] = df_agg['actor_director'].str.split(',', expand=True)
+    df_agg = df_agg[['originalTitle', 'genres', 'actor', 'director', 'runtimeMinutes', 'startYear','averageRating']]
+    df_agg = df_agg.dropna()
+    print(df_agg.head())
+    df_agg.to_csv('knn_features.csv', index=False)
+    
+    return df_agg
+
 def write_output(result):
-    result.to_csv('features_index.csv', index=False)
+    result.to_csv('1kbest.csv', index=False)
 
 def main():
     config = read_config()
     conn = connect_to_database(config)
     df = get_data(conn)
     if not df.empty:
-        result = create_features(df)
-        for row in result.itertuples():
-            print(row.features)
-        write_output(result)
-    else:
-        print("No results found")
+        # result = create_features_cosine(df)
+        result = create_features_knn(df)
+    #     for row in result.itertuples():
+    #         print(row.features)
+    #     write_output(result)
+    # else:
+    #     print("No results found")
+    
+elapsed_time = time.time() - start_time
+print(f"Temps d'exécution : {elapsed_time:.2f} secondes.")
 
 if __name__ == "__main__":
     main()
