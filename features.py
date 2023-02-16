@@ -3,8 +3,6 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 import time
 
-start_time = time.time()
-
 def read_config():
     with open("config.yaml", 'r') as ymlfile:
         config = yaml.load(ymlfile, Loader=yaml.FullLoader)
@@ -20,7 +18,7 @@ def get_data(conn):
                     FROM title_basics tb
                     LEFT JOIN title_principals tp ON tb.tconst = tp.tconst
                     LEFT JOIN title_ratings tr ON tb.tconst = tr.tconst
-                    WHERE tb.titleType = 'movie' AND tb.genres IS NOT NULL AND tp.category IN ('director', 'actor')''')
+                    WHERE tb.titleType = 'movie' AND tb.genres IS NOT NULL AND tp.category IN ('director', 'actor') limit 1000''')
     
     # query = text('''SELECT tb.tconst, tb.genres, tp.nconst, tp.category, tb.runtimeMinutes, tb.startYear, tb.originalTitle, tr.averageRating, tr.numVotes
     #                 FROM title_basics tb
@@ -75,7 +73,7 @@ def create_features_knn(df):
     df_agg = df_agg[['originalTitle', 'genres', 'actor', 'director', 'runtimeMinutes', 'startYear','averageRating']]
     df_agg = df_agg.dropna()
     print(df_agg.head())
-    df_agg.to_csv('knn_features.csv', index=False)
+    df_agg.to_csv('knn_feature.csv', index=False)
     
     return df_agg
 
@@ -83,6 +81,7 @@ def write_output(result):
     result.to_csv('1kbest.csv', index=False)
 
 def main():
+    start_time = time.time()
     config = read_config()
     conn = connect_to_database(config)
     df = get_data(conn)
@@ -94,9 +93,8 @@ def main():
     #     write_output(result)
     # else:
     #     print("No results found")
-    
-elapsed_time = time.time() - start_time
-print(f"Temps d'exécution : {elapsed_time:.2f} secondes.")
+    elapsed_time = time.time() - start_time
+    print(f"Temps d'exécution : {elapsed_time:.2f} secondes.")
 
 if __name__ == "__main__":
     main()

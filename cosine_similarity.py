@@ -5,31 +5,42 @@ from sklearn.decomposition import TruncatedSVD
 import numpy as np
 import time
 
-start_time = time.time()
+def load_data(csv_file):
+    return pd.read_csv(csv_file, encoding='utf-8')
 
-data = pd.read_csv('all_movies.csv', encoding='utf-8')
+def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
+    liked_movie_idx = data[data['originalTitle'] == movie_title].index
 
-cv = CountVectorizer()
-count_matrix = cv.fit_transform(data['features']).tocsr()
+    if len(liked_movie_idx) > 0:
+        cosine_sim_light = cosine_similarity(X=count_matrix[liked_movie_idx], Y=count_matrix)
+        row = cosine_sim_light[0]
+        indices = np.argsort(-row)[1:n_similar+1]
 
-svd = TruncatedSVD(n_components=200)
-count_matrix_svd = svd.fit_transform(count_matrix)
+        print(f"Les {n_similar} films les plus similaires à '{movie_title}' sont:")
+        for i in indices:
+            movie = data.iloc[i]['originalTitle']
+            print(f"{movie} ({row[i]:.2f})")
+    else:
+        print(f"Aucun film trouvé avec le titre '{movie_title}'.")
 
-liked_movie = 'Avatar'
+def main():
+    start_time = time.time()
 
-liked_movie_idx = data[data['originalTitle'] == liked_movie].index
+    # Chargement des données
+    data = load_data('all_movies.csv')
 
-if len(liked_movie_idx) > 0:
-    cosine_sim_light = cosine_similarity(X = count_matrix[liked_movie_idx], Y = count_matrix)
-    row = cosine_sim_light[0]
-    indices = np.argsort(-row)[1:6]
+    # Préparation des données
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(data['features']).tocsr()
+    svd = TruncatedSVD(n_components=200)
+    count_matrix_svd = svd.fit_transform(count_matrix)
 
-    print(f"Les 5 films les plus similaires à '{liked_movie}' sont:")
-    for i in indices:
-        movie = data.iloc[i]['originalTitle']
-        print(f"{movie} ({row[i]:.2f})")
-else:
-    print(f"Aucun film trouvé avec le titre'{liked_movie}'.")
+    # Recherche de films similaires
+    liked_movie = 'Avatar'
+    get_similar_movies(liked_movie, data, cv, count_matrix, svd)
 
-elapsed_time = time.time() - start_time
-print(f"Temps d'exécution : {elapsed_time:.2f} secondes.")
+    elapsed_time = time.time() - start_time
+    print(f"Temps d'exécution : {elapsed_time:.2f} secondes.")
+
+if __name__ == '__main__':
+    main()
