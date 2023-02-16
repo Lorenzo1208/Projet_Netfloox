@@ -65,8 +65,8 @@ def train_models(X_train, X_test, y_train, y_test, preparation):
         # {'model__n_neighbors': [1, 5], 'model__p': [1]},
         # {'model__n_estimators': [10], 'model__max_depth': [10]},
         
-        {'model__n_neighbors': [1, 3, 5, 7, 9, 11], 'model__p': [1, 2]},
-        {'model__n_estimators': [10, 50, 100, 200], 'model__max_depth': [5, 10, 20, 30]},
+        {'model__n_neighbors': [9], 'model__p': [1]}, # {'model__p': 1, 'model__n_neighbors': 11}
+        {'model__n_estimators': [10], 'model__max_depth': [10]}, # {'model__n_estimators': 200, 'model__max_depth': 30}
         # {'model__C': [0.1, 1], 'model__loss': ['hinge', 'squared_hinge']},
         # {'model__C': [0.1, 1], 'model__kernel': ['linear', 'rbf'], 'model__gamma': ['scale', 'auto']}
     ]
@@ -98,7 +98,7 @@ def train_models(X_train, X_test, y_train, y_test, preparation):
         else:
             search_params = random_params[i]
 
-        search = RandomizedSearchCV(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1, n_iter=12)
+        search = RandomizedSearchCV(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1, n_iter=1)
         # search = search_method(pipeline, search_params, scoring='f1_weighted', cv=5, n_jobs=-1)
         search.fit(X_train, y_train)
 
