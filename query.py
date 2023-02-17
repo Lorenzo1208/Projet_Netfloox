@@ -102,11 +102,29 @@ def main():
                   WHERE t2.startYear > 2000
                  LIMIT 50;""")
 
+    query7 = text("""SELECT tb.primaryTitle, tr.averageRating
+                    FROM title_basics tb
+                    JOIN title_ratings tr ON tb.tconst = tr.tconst
+                    WHERE tb.titleType = 'movie' AND tb.startYear = 2021 AND tr.numVotes > 100000
+                    ORDER BY tr.averageRating DESC
+                    LIMIT 10;
+                    """)
+    
+    query8 = text("""DESCRIBE SELECT COUNT(*) FROM title_basics WHERE titleType = 'movie' AND startYear = 2022;""")
+    
+    query9 = text("""DESCRIBE SELECT names.primaryName, COUNT(*) AS num_films
+                    FROM title_principals
+                    JOIN names ON title_principals.nconst = names.nconst
+                    WHERE title_principals.category = 'actor'
+                    GROUP BY title_principals.nconst
+                    ORDER BY num_films DESC
+                    LIMIT 10;""")
+    
     #def concat_features(row):
     #    return row['genres'].replace(',','') + ' ' + row['directors'].replace(' ','')
     # df['features'] = df.apply(concat_features, axis=1)
     
-    df = get_data(engine, query5)
+    df = get_data(engine, query8)
     # df_movies = df[df['titleType'] == 'movie']
     # regrouper par tconst et sélectionner la première valeur non-nulle de writers et directors
     # df_grouped = df.groupby('tconst').agg({'knownForTitles': lambda x: next((i for i in x if i is not None), None),

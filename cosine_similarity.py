@@ -36,7 +36,7 @@ def main():
     count_matrix_svd = svd.fit_transform(count_matrix)
 
     # Recherche de films similaires
-    liked_movie = 'John Wick'
+    liked_movie = 'The Matrix'
     get_similar_movies(liked_movie, data, cv, count_matrix, svd)
 
     elapsed_time = time.time() - start_time
