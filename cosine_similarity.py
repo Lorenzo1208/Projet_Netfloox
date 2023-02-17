@@ -27,16 +27,16 @@ def main():
     start_time = time.time()
 
     # Chargement des données
-    data = load_data('all_movies.csv')
+    data = load_data('cosine_features_no_date.csv')
 
     # Préparation des données
     cv = CountVectorizer()
     count_matrix = cv.fit_transform(data['features']).tocsr()
-    svd = TruncatedSVD(n_components=200)
+    svd = TruncatedSVD(n_components=1)
     count_matrix_svd = svd.fit_transform(count_matrix)
 
     # Recherche de films similaires
-    liked_movie = 'Avatar'
+    liked_movie = 'John Wick'
     get_similar_movies(liked_movie, data, cv, count_matrix, svd)
 
     elapsed_time = time.time() - start_time
