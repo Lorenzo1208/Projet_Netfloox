@@ -31,8 +31,7 @@ def plot_data(df):
 def load_csv():
     df = pd.read_csv('data_movie_2000.csv')
     unique_tconst = df['tconst'].nunique()
-    print(f" {unique_tconst} : Films")
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    print(f" {unique_tconst} : Films")                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 def main():
     
     config = get_config()
@@ -50,57 +49,54 @@ def main():
                     """)
     
     query4 = text("""SELECT title_ratings.tconst, title_ratings.averageRating, title_ratings.numVotes,
-                 title_principals.tconst, title_principals.nconst, title_principals.category,
-                 title_basics.titleType, title_basics.isAdult, title_basics.startYear, title_basics.runtimeMinutes, title_basics.genres,
-                 title_akas.title, title_akas.titleId,
-                 names.primaryName, names.primaryProfession, names.nconst,
-                 directors.directors, directors.tconst,
-                 writers.writers, writers.tconst
-                 
-                 FROM title_basics
-                 
-                 INNER JOIN title_ratings
-                 ON title_basics.tconst = title_ratings.tconst
-                 
-                 INNER JOIN title_principals
-                 ON title_basics.tconst = title_principals.tconst
-                 
-                 INNER JOIN title_akas
-                 ON title_basics.tconst = title_akas.titleId
-                 
-                 INNER JOIN names
-                 ON title_principals.nconst = names.nconst
-                 
-                 INNER JOIN directors
-                 ON title_basics.tconst = directors.tconst
-                 
-                 INNER JOIN writers
-                 ON title_basics.tconst = writers.tconst 
-                 
-                 WHERE title_basics.titleType = 'movie' AND title_basics.startYear > 2000
-                Limit 1000000
-                 ;
+                title_principals.tconst, title_principals.nconst, title_principals.category,
+                title_basics.titleType, title_basics.isAdult, title_basics.startYear, title_basics.runtimeMinutes, title_basics.genres,
+                title_akas.title, title_akas.titleId,
+                names.primaryName, names.primaryProfession, names.nconst,
+                directors.directors, directors.tconst,
+                writers.writers, writers.tconst
+                FROM title_basics
+                
+                INNER JOIN title_ratings
+                ON title_basics.tconst = title_ratings.tconst
+                
+                INNER JOIN title_principals
+                ON title_basics.tconst = title_principals.tconst
+                
+                INNER JOIN title_akas
+                ON title_basics.tconst = title_akas.titleId
+                
+                INNER JOIN names
+                ON title_principals.nconst = names.nconst
+                
+                INNER JOIN directors
+                ON title_basics.tconst = directors.tconst
+                
+                INNER JOIN writers
+                ON title_basics.tconst = writers.tconst 
+                
+                WHERE title_basics.titleType = 'movie' AND title_basics.startYear > 2000
+                Limit 1000000;
                 """)
     
     #634638 movies
     query5 = text("""SELECT COUNT(*) FROM title_basics WHERE titleType = 'movie';""")
     
     query6 = text("""SELECT t1.nconst, t1.tconst, t1.category,
-                  t3.writers, t3.directors, t4.nconst, t4.knownForTitles,
-                  
-                  FROM title_principals AS t1
-                  
-                  INNER JOIN title_crew AS t3
-                  ON t1.tconst = t3.tconst
-                  
-                  INNER JOIN title_basics AS t2
-                  ON t1.tconst = t2.tconst
-                  
-                  INNER JOIN name_basics AS t4
-                  ON t1.tconst = t4.tconst
-                  
-                  WHERE t2.startYear > 2000
-                 LIMIT 50;""")
+                t3.writers, t3.directors, t4.nconst, t4.knownForTitles,
+                
+                FROM title_principals AS t1
+                INNER JOIN title_crew AS t3
+                
+                ON t1.tconst = t3.tconst
+                INNER JOIN title_basics AS t2
+                
+                ON t1.tconst = t2.tconst
+                INNER JOIN name_basics AS t4
+                
+                ON t1.tconst = t4.tconst
+                WHERE t2.startYear > 2000
+                LIMIT 50;""")
 
     query7 = text("""SELECT tb.primaryTitle, tr.averageRating
                     FROM title_basics tb
