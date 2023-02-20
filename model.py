@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, SGDRegressor, Lasso, ElasticNet, Ridge
 from sklearn.svm import LinearSVC, SVC
