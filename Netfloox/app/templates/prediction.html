@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Similar Movies</title>
+</head>
+<body>
+	<form method="GET">
+		<label for="movie">Entrer un film:</label>
+		<input type="text" id="movie" name="movie" value="{{ liked_movie }}">
+		<button type="submit">Rechercher</button>
+	</form>
+
+	<h1>Films similaires à : '{{ liked_movie }}'</h1>
+
+	{% if movies %}
+		<ul>
+		{% for movie in movies %}
+			<li>{{ movie.0 }} ({{ movie.1 }})</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>Pas de films similaires trouvés, essayer de marquer le film en anglais.</p>
+	{% endif %}
+</body>
+</html>
