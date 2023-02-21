@@ -30,15 +30,18 @@ def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
         cosine_sim_light = cosine_similarity(X=count_matrix[liked_movie_idx], Y=count_matrix)
         row = cosine_sim_light[0]
         indices = np.argsort(-row)[1:n_similar+1]
-
+        
         movies = []
         for i in indices:
             movie = data.iloc[i]['originalTitle']
-            movies.append((movie, row[i]))
+            similarity = round(row[i] * 100, 2)
+            movies.append((movie, similarity))
+            print(f"{movie} ({similarity}%)")
     else:
         movies = [(f"Aucun film trouvé avec le titre '{movie_title}'.", 0)]
 
     return movies
+
 
 def prediction(request):
     data = load_data('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/cosine_features_no_date.csv')

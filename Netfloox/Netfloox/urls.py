@@ -20,6 +20,6 @@ from app.views import home, analyse, prediction
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home , name="home"),
-    path("analyse", analyse , name="analyse"),
+    path("analyses", analyse , name="analyse"),
     path("prediction", prediction , name="prediction"),
 ]

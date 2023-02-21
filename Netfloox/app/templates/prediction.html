@@ -1,6 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        /* Style pour le formulaire de recherche */
+form {
+  display: center;
+  align-items: center;
+}
+body {
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+}
+label {
+  margin-right: 10px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Style pour la liste des films similaires */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+}
+
+li:first-child {
+  font-weight: bold;
+}
+
+p {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+}
+
+    </style>
 	<meta charset="utf-8">
 	<title>Similar Movies</title>
 </head>
@@ -14,13 +76,13 @@
 	<h1>Films similaires à : '{{ liked_movie }}'</h1>
 
 	{% if movies %}
-		<ul>
-		{% for movie in movies %}
-			<li>{{ movie.0 }} ({{ movie.1 }})</li>
-		{% endfor %}
-		</ul>
-	{% else %}
-		<p>Pas de films similaires trouvés, essayer de marquer le film en anglais.</p>
-	{% endif %}
+	<ul>
+	{% for movie in movies %}
+		<li>{{ movie.0 }} ({{ movie.1 }}%)</li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>Pas de films similaires trouvés, essayer de marquer le film en anglais.</p>
+{% endif %}
 </body>
 </html>
