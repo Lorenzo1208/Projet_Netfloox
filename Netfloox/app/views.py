@@ -17,8 +17,8 @@ print(f"Files in directory: {files}")
 def home(request):
     return render(request, 'home.html')
 
-def analyse(request):
-    return render(request, 'analyse.html')
+def analyses(request):
+    return render(request, 'analyses.html')
 
 def load_data(csv_file):
     return pd.read_csv(csv_file, encoding='utf-8')
