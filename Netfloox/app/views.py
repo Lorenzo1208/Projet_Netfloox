@@ -12,6 +12,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.io as pio
+import pickle
+from sklearn.preprocessing import LabelEncoder
 import base64
 import numpy as np
 import os
@@ -30,6 +32,58 @@ def home(request):
 def analyses(request):
 
     return render(request, 'analyses.html')
+
+def score(request):
+    if request.method == 'POST':
+        # Collect the user inputs from the form
+        title = request.POST.get('title', '')
+        genres = request.POST.get('genres', '')
+        actor = request.POST.get('actor', '')
+        director = request.POST.get('director', '')
+        runtime = request.POST.get('runtime', '')
+        year = request.POST.get('year', '')
+
+        # Check if runtime and year are valid integers
+        try:
+            if runtime:
+                runtime = int(runtime)
+            if year:
+                year = int(year)
+        except ValueError:
+            return render(request, 'prediction2.html', {'error': 'Please enter valid runtime and year.'})
+
+        # Check if title, genres, actor, and director are valid strings
+        if not isinstance(title, str) or not isinstance(genres, str) or not isinstance(actor, str) or not isinstance(director, str):
+            return render(request, 'prediction2.html', {'error': 'Please enter valid inputs for title, genres, actor, and director.'})
+
+        # Create a DataFrame using the user inputs
+        test_data = pd.DataFrame({
+            'originalTitle': [title],
+            'genres': [genres],
+            'actor': [actor],
+            'director': [director],
+            'runtimeMinutes': [runtime] if runtime else [''],
+            'startYear': [year] if year else [''],
+            'averageRating': ['']
+        })
+
+        # Load the saved model
+        model_path = 'app/RandomForestClassifier_model.pkl'
+        with open(model_path, 'rb') as f:
+            grid = pickle.load(f)
+
+        # Prepare the input data
+        le = LabelEncoder()
+        test_data = test_data.apply(lambda col: le.fit_transform(col.astype(str)) if col.dtype == 'object' else col)
+
+        # Make predictions
+        X = test_data.drop(columns='averageRating')
+        y_pred = grid.predict(X)
+
+        # Pass the prediction to the template
+        return render(request, 'score.html', {'prediction': y_pred[0]})
+
+    return render(request, 'score.html')
 
 def load_data(csv_file):
     return pd.read_csv(csv_file, encoding='utf-8')

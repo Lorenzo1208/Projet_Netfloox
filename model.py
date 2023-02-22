@@ -156,7 +156,7 @@ def main():
         'actor': [''],
         'director': [''],
         'runtimeMinutes': [''], # 172
-        'startYear': [''], #2019
+        'startYear': [''], #2001
         'averageRating': ['']
     })
 

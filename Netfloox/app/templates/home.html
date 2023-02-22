@@ -18,7 +18,7 @@
         @import url('https://fonts.googleapis.com/css?family=Roboto:700,900');
 
         body {
-        background: radial-gradient(#fff, #aaa);
+        background: radial-gradient(#403f3f, #000);
         background-size: 100vw 100vh; 
         overflow: hidden;
         padding-top: 40vh;
@@ -75,7 +75,10 @@
       
 <style>
 
-* {box-sizing: border-box;}
+* {box-sizing: border-box;
+
+}
+
 
 body {
   margin: 0;
@@ -155,6 +158,7 @@ body {
   <a class="active" href="">Accueil</a>
   <a href="analyses">Analyse</a>
   <a href="prediction">Prédiction</a>
+  <a href="score">Score</a>
   <div class="search-container">
     <form action="/action_page.php">
       <input type="text" placeholder="Rechercher..." name="search" style="width: 1700px; height: 40px;">
@@ -176,7 +180,7 @@ body {
 :root {
   --primary: #141414;
   --light: #F3F3F3;
-  --dark: 	#686868;
+  --dark: 	#00000;
 }
 
 html, body {
@@ -469,9 +473,7 @@ footer {
     <!-- MAIN CONTAINER -->
     <section class="main-container" >
       <style>
-        #home {
-          color: black;
-        }
+       
       </style>
       <div class="location" id="home">
           <h1 id="home">En ce moment sur Netfloox</h1>

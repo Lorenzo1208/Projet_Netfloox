@@ -29,9 +29,12 @@
     <a class="active" href="/">Accueil</a>
     <a href="analyses">Analyse</a>
     <a href="prediction">Prédiction</a>
+    <a href="score">Score</a>
   </div>
 <head>
   <style>
+
+
     /* Style pour le formulaire de recherche */
 form {
 display: center;
@@ -40,6 +43,8 @@ align-items: center;
 body {
 font-family: 'Bebas Neue', sans-serif;
 text-align: center;
+background: radial-gradient(#403f3f, #000);
+color: #ffffff;
 }
 label {
 margin-right: 10px;
@@ -99,7 +104,7 @@ font-size: 20px;
   
 </head>
 <body>
-
+  <img src="{% static 'image-removebg-preview.png' %}">
   <h1>Analyses</h1>
   <p> Dans le cadre de notre projet, nous avons utilisé les données fournies par IMDb pour effectuer des analyses et des modélisations. 
     Le dataset que nous avons utilisé contenait des informations sur des titres de films, de séries télévisées, de courts métrages, de jeux vidéo et d'autres contenus. 
@@ -109,11 +114,11 @@ font-size: 20px;
     pertinentes pour notre projet. </p>
   <img src="{% static 'type.png' %}">
   <h2>Genres les mieux représentés parmi les genres les mieux notés</h2>
-  <img src="{% static 'genres.png' %}">
+  <img src="{% static 'graph.png' %}">
   <h2>Durée moyenne des films des réalisateurs les mieux notés vs moins bien notés</h2>
-  <img src="{% static 'directors.png' %}">
+  <img src="{% static 'dir.png' %}">
   <h2>Scatter matrix</h2>
-  <img src="{% static 'parplot.png' %}">
+  <img src="{% static 'matr.png' %}">
 
 </body>
 </html>
