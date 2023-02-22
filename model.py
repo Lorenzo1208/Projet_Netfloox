@@ -34,7 +34,9 @@ def train_model(csv_file):
 
     preparation = ColumnTransformer(
         transformers=[
-            ('data_cat', transfo_cat, X.select_dtypes(include=['object']).columns),
+            ('data_cat', Pipeline(steps=[
+            ('encoding', OneHotEncoder(handle_unknown='ignore', sparse=False)),
+            ('pca', PCA(n_components=0.90))]), X.select_dtypes(include=['object']).columns),
             ('data_num', PCA(n_components=0.90), X.select_dtypes(exclude=['object']).columns),
             ('imputer', KNNImputer(n_neighbors=3, weights="uniform"), X.columns),
             ('scaler', RobustScaler(), X.columns)
