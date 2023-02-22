@@ -56,7 +56,7 @@ def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
 
 def prediction(request):
     data = load_data('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/cosine_features_no_date.csv')
-
+    les_films = data["originalTitle"]
     cv = CountVectorizer()
     count_matrix = cv.fit_transform(data['features']).tocsr()
     svd = TruncatedSVD(n_components=1)
@@ -66,7 +66,9 @@ def prediction(request):
     movies = get_similar_movies(liked_movie, data, cv, count_matrix, svd)
 
     context = {
-        'movies': movies,
-        'liked_movie': liked_movie,
-    }
+    'movies': movies,
+    'liked_movie': liked_movie,
+    'les_films': les_films
+}
     return render(request, 'prediction.html', context)
+

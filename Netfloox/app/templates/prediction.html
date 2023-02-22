@@ -72,11 +72,24 @@ p {
 	<title>Similar Movies</title>
 </head>
 <body>
+  <h4></h4>
 	<form method="GET">
 		<label for="movie">Entrer un film:</label>
 		<input type="text" id="movie" name="movie" value="{{ liked_movie }}">
 		<button type="submit">Rechercher</button>
 	</form>
+<h4></h4>
+</head>
+<body>
+    <form method="GET">
+      <label for="movie">Choisir un film:</label>
+      <select id="movie" name="movie">
+        {% for film in les_films|slice:":100" %}
+          <option value="{{ film }}">{{ film }}</option>
+        {% endfor %}
+      </select>      
+      <button type="submit">Rechercher</button>
+    </form>
 
 	<h1>Films similaires à : '{{ liked_movie }}'</h1>
 
