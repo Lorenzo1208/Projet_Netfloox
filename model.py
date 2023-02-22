@@ -140,20 +140,20 @@ def main():
 
     # Entraînement du modèle
     
-    X_train, X_test, y_train, y_test, preparation = train_model(csv_file)
-    results = train_models(X_train, X_test, y_train, y_test, preparation)
+    # X_train, X_test, y_train, y_test, preparation = train_model(csv_file)
+    # results = train_models(X_train, X_test, y_train, y_test, preparation)
 
     # Affichage des scores et des meilleurs paramètres de chaque modèle
     
-    for model, best_params, score in results:
-        print(f'{model.__class__.__name__} best parameters: {best_params}')
-        print(f'{model.__class__.__name__} test score: {score:.4f}\n')
+    # for model, best_params, score in results:
+    #     print(f'{model.__class__.__name__} best parameters: {best_params}')
+    #     print(f'{model.__class__.__name__} test score: {score:.4f}\n')
 
     # Prédiction d'une note moyenne
     test_data = pd.DataFrame({
         'originalTitle': [''],
         'genres': [''],
-        'actor': ['Leonardo DiCaprio'],
+        'actor': [''],
         'director': [''],
         'runtimeMinutes': [''], # 172
         'startYear': [''], #2019
