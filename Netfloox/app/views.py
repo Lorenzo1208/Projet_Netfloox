@@ -3,6 +3,16 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import io
+from django.http import HttpResponse
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import plotly.express as px
+import plotly.graph_objs as go
+import plotly.io as pio
+import base64
 import numpy as np
 import os
 
@@ -18,6 +28,7 @@ def home(request):
     return render(request, 'home.html')
 
 def analyses(request):
+
     return render(request, 'analyses.html')
 
 def load_data(csv_file):

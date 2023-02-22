@@ -116,11 +116,18 @@ def main():
                     ORDER BY num_films DESC
                     LIMIT 10;""")
     
+    query10 = text("""SELECT titleType, COUNT(*) as count
+                        FROM title_basics
+                        GROUP BY titleType;""")
+    
+    query11 = text("""SELECT COUNT(*) as count
+FROM title_basics;""")
+
     #def concat_features(row):
     #    return row['genres'].replace(',','') + ' ' + row['directors'].replace(' ','')
     # df['features'] = df.apply(concat_features, axis=1)
     
-    df = get_data(engine, query8)
+    df = get_data(engine, query11)
     # df_movies = df[df['titleType'] == 'movie']
     # regrouper par tconst et sélectionner la première valeur non-nulle de writers et directors
     # df_grouped = df.groupby('tconst').agg({'knownForTitles': lambda x: next((i for i in x if i is not None), None),

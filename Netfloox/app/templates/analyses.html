@@ -1,11 +1,95 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
+  <div class="topnav">
+    <a class="active" href="/">Accueil</a>
+    <a href="analyses">Analyse</a>
+    <a href="prediction">Prédiction</a>
+  </div>
 <head>
-    <meta charset="UTF-8">
-    <title>Analyses</title>
+  <style>
+    /* Style pour le formulaire de recherche */
+form {
+display: center;
+align-items: center;
+}
+body {
+font-family: 'Bebas Neue', sans-serif;
+text-align: center;
+}
+label {
+margin-right: 10px;
+}
+
+input[type="text"] {
+padding: 10px;
+font-size: 16px;
+border: 1px solid #ccc;
+border-radius: 5px;
+outline: none;
+}
+
+button[type="submit"] {
+background-color: #007bff;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+font-size: 16px;
+cursor: pointer;
+}
+
+/* Style pour la liste des films similaires */
+ul {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+li {
+padding: 10px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+font-size: 16px;
+}
+
+li:first-child {
+font-weight: bold;
+}
+
+p {
+  display: center;
+padding: 10px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+font-size: 20px;
+}
+
+</style>
+  <meta charset="utf-8">
+  <title>Analyses</title>
+  
 </head>
 <body>
-    <h1>Analyses</h1>
-    <p>Analyses</p>
+
+  <h1>Analyses</h1>
+  <p> Dans le cadre de notre projet, nous avons utilisé les données fournies par IMDb pour effectuer des analyses et des modélisations. 
+    Le dataset que nous avons utilisé contenait des informations sur des titres de films, de séries télévisées, de courts métrages, de jeux vidéo et d'autres contenus. 
+    Nous avons observé qu'il y avait un total de 9 588 557 de titres dans le dataset. 
+    Nous avons également constaté que le type de contenu le plus fréquent était le court métrage (912 188), suivi du film (634 638) et de la série télévisée (238 073). 
+    Cette information nous a permis de mieux comprendre la répartition des contenus dans le dataset et de nous orienter vers les analyses et les modélisations les plus 
+    pertinentes pour notre projet. </p>
+  <img src="{% static 'type.png' %}">
+  <h2>Genres les mieux représentés parmi les genres les mieux notés</h2>
+  <img src="{% static 'genres.png' %}">
+  <h2>Durée moyenne des films des réalisateurs les mieux notés vs moins bien notés</h2>
+  <img src="{% static 'directors.png' %}">
+  <h2>Scatter matrix</h2>
+  <img src="{% static 'parplot.png' %}">
+
 </body>
 </html>
