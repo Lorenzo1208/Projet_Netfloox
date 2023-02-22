@@ -56,8 +56,7 @@ def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
 
 def prediction(request):
     data = load_data('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/cosine_features_no_date.csv')
-    data1 = load_data('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/2kbest.csv')
-    les_films = data1["originalTitle"]
+    les_films = data["originalTitle"]
     cv = CountVectorizer()
     count_matrix = cv.fit_transform(data['features']).tocsr()
     svd = TruncatedSVD(n_components=1)
