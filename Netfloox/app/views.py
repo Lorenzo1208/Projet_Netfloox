@@ -171,7 +171,7 @@ def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
     return movies
 
 
-def prediction(request):
+def recommandation(request):
     import requests
 
     api_key = "ed0a9324"
@@ -204,7 +204,7 @@ def prediction(request):
         'posters': posters,
     }
 
-    return render(request, 'prediction.html', context)
+    return render(request, 'recommandation.html', context)
 
 
 
