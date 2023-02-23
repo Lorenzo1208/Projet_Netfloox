@@ -75,6 +75,8 @@ def analyses(request):
 
     return render(request, 'analyses.html', context={'plot': plot(fig, output_type='div'),'plot2': plot(fig2, output_type='div'),'plot3': plot(fig3, output_type='div'), 'plot4': plot(fig4, output_type='div')})
 
+
+
 def score(request):
     if request.method == 'POST':
         # Collect the user inputs from the form
@@ -92,11 +94,11 @@ def score(request):
             if year:
                 year = int(year)
         except ValueError:
-            return render(request, 'prediction2.html', {'error': 'Please enter valid runtime and year.'})
+            return render(request, 'score.html', {'error': 'Please enter valid runtime and year.'})
 
         # Check if title, genres, actor, and director are valid strings
         if not isinstance(title, str) or not isinstance(genres, str) or not isinstance(actor, str) or not isinstance(director, str):
-            return render(request, 'prediction2.html', {'error': 'Please enter valid inputs for title, genres, actor, and director.'})
+            return render(request, 'score.html', {'error': 'Please enter valid inputs for title, genres, actor, and director.'})
 
         # Create a DataFrame using the user inputs
         test_data = pd.DataFrame({
@@ -131,26 +133,36 @@ def load_data(csv_file):
     return pd.read_csv(csv_file, encoding='utf-8')
 
 def get_similar_movies(movie_title, data, cv, count_matrix, svd, n_similar=5):
+    import requests
+
+    api_key = "ed0a9324"
+
     liked_movie_idx = data[data['originalTitle'] == movie_title].index
 
     if len(liked_movie_idx) > 0:
         cosine_sim_light = cosine_similarity(X=count_matrix[liked_movie_idx], Y=count_matrix)
         row = cosine_sim_light[0]
         indices = np.argsort(-row)[1:n_similar+1]
-        
+
         movies = []
         for i in indices:
             movie = data.iloc[i]['originalTitle']
             similarity = round(row[i] * 100, 2)
-            movies.append((movie, similarity))
-            print(f"{movie} ({similarity}%)")
+            response = requests.get(f"http://www.omdbapi.com/?t={movie}&apikey={api_key}")
+            json_response = response.json()
+            poster_url = json_response.get("Poster")
+            movies.append((movie, similarity, poster_url))
     else:
-        movies = [(f"Aucun film trouvé avec le titre '{movie_title}'.", 0)]
+        movies = [(f"Aucun film trouvé avec le titre '{movie_title}'.", 0, '')]
 
     return movies
 
 
 def prediction(request):
+    import requests
+
+    api_key = "ed0a9324"
+
     data = load_data('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/cosine_features_no_date.csv')
     les_films = data["originalTitle"]
     cv = CountVectorizer()
@@ -159,12 +171,27 @@ def prediction(request):
     count_matrix_svd = svd.fit_transform(count_matrix)
 
     liked_movie = request.GET.get('movie', 'The Matrix')
+
+    # Make a GET request to OMDb API to get the poster URL for the liked movie
+    response = requests.get(f"http://www.omdbapi.com/?t={liked_movie}&apikey={api_key}")
+    json_response = response.json()
+    poster_url = json_response.get("Poster")
+
     movies = get_similar_movies(liked_movie, data, cv, count_matrix, svd)
 
+    posters = []
+    for movie in movies:
+        posters.append(movie[2])
+
     context = {
-    'movies': movies,
-    'liked_movie': liked_movie,
-    'les_films': les_films
-}
+        'movies': movies,
+        'liked_movie': liked_movie,
+        'les_films': les_films,
+        'poster_url': poster_url,
+        'posters': posters,
+    }
+
     return render(request, 'prediction.html', context)
+
+
 
