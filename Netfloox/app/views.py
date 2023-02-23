@@ -36,6 +36,11 @@ def analyses(request):
         'Values': [912188, 634638, 238073, 9923, 140297, 7262412, 47097, 40390, 270104, 33433]}
     df = pd.DataFrame(data)
     fig4 = px.pie(df, values='Values', names='Type', width=1000, height=500)
+    fig4.update_layout(
+    plot_bgcolor='black',
+    paper_bgcolor='black',
+)
+
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     data = data.head(1000)
@@ -43,6 +48,9 @@ def analyses(request):
     print(df_drop_outliers.columns)
     fig = px.scatter_matrix(df_drop_outliers,
     dimensions=["runtimeMinutes","startYear","averageRating"], color="averageRating", width=1000, height=500)
+    fig.update_layout(
+    plot_bgcolor='black',
+    paper_bgcolor='black',)
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     df_director = data.groupby(['director']).mean()
@@ -55,6 +63,9 @@ def analyses(request):
     fig2 = px.bar(df_director, x='director', y='runtimeMinutes',hover_data=['runtimeMinutes', 'averageRating'], color='director', width=1000, height=500)
     fig2.add_vline(x=14.5, line_dash="dash", line_color="red")
     fig2.add_hline(y=100, line_dash="dash", line_color="blue")
+    fig2.update_layout(
+    plot_bgcolor='black',
+    paper_bgcolor='black',)
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     df_genres = data.groupby(['genres']).mean()
@@ -70,7 +81,9 @@ def analyses(request):
     fig3 = px.bar(df_top_genre, x=df_top_genre[0].index, y=df_top_genre[0].values, width=1000, height=500, color=df_top_genre[0].values)
     fig3.update_layout(
     xaxis_title='13 premiers Genres',
-    yaxis_title="Nombre d'occurences"
+    yaxis_title="Nombre d'occurences",
+    plot_bgcolor='black',
+    paper_bgcolor='black',
 )
 
     return render(request, 'analyses.html', context={'plot': plot(fig, output_type='div'),'plot2': plot(fig2, output_type='div'),'plot3': plot(fig3, output_type='div'), 'plot4': plot(fig4, output_type='div')})
