@@ -98,6 +98,7 @@ box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 font-size: 20px;
 }
 
+plot
 </style>
   <meta charset="utf-8">
   <title>Analyses</title>
@@ -106,19 +107,43 @@ font-size: 20px;
 <body>
   <img src="{% static 'image-removebg-preview.png' %}">
   <h1>Analyses</h1>
-  <p> Dans le cadre de notre projet, nous avons utilisé les données fournies par IMDb pour effectuer des analyses et des modélisations. 
-    Le dataset que nous avons utilisé contenait des informations sur des titres de films, de séries télévisées, de courts métrages, de jeux vidéo et d'autres contenus. 
-    Nous avons observé qu'il y avait un total de 9 588 557 de titres dans le dataset. 
-    Nous avons également constaté que le type de contenu le plus fréquent était le court métrage (912 188), suivi du film (634 638) et de la série télévisée (238 073). 
-    Cette information nous a permis de mieux comprendre la répartition des contenus dans le dataset et de nous orienter vers les analyses et les modélisations les plus 
-    pertinentes pour notre projet. </p>
-  <img src="{% static 'type.png' %}">
-  <h2>Genres les mieux représentés parmi les genres les mieux notés</h2>
-  <img src="{% static 'graph.png' %}">
-  <h2>Durée moyenne des films des réalisateurs les mieux notés vs moins bien notés</h2>
-  <img src="{% static 'dir.png' %}">
-  <h2>Scatter matrix</h2>
-  <img src="{% static 'matr.png' %}">
-
+    <p> Les données utilisées dans ce projet ont été obtenues à partir du site IMDb (Internet Movie Database), 
+      une base de données en ligne qui contient des informations sur les films, les émissions de télévision, 
+      les jeux vidéo et les productions de streaming. IMDb est une source de données populaire pour les projets de recherche et d’analyse de données dans le 
+      domaine du cinéma et de la télévision, car il offre une grande quantité d’informations détaillées sur les productions, les acteurs et les réalisateurs. 
+      Pour ce projet, nous nous sommes concentrées sur les films pour faire nos recommandations et nos prédictions.</p>
+    <h2>Extraction des données</h2>
+    <img src="{% static 'imdb-icon.png' %}">
+    <br>
+    <h2>Modèle relationnel de données</h2>
+    <img src="{% static 'image.png' %}">
+    <br>
+    <p> Dans le cadre de notre projet, nous avons utilisé les données fournies par IMDb pour effectuer des analyses et des modélisations. 
+      Le dataset que nous avons utilisé contenait des informations sur des titres de films, de séries télévisées, de courts métrages, de jeux vidéo et d'autres contenus. 
+      Nous avons observé qu'il y avait un total de 9 588 557 de titres dans le dataset. 
+      Nous avons également constaté que le type de contenu le plus fréquent était le court métrage (912 188), suivi du film (634 638) et de la série télévisée (238 073). 
+      Cette information nous a permis de mieux comprendre la répartition des contenus dans le dataset et de nous orienter vers les analyses et les modélisations les plus 
+      pertinentes pour notre projet. </p>
+    <div style="display: flex; justify-content: center;">
+      <div class="plot-container plotly" style="margin-left: auto; margin-right: auto;">
+        <h2>Type de données</h2>
+        {% autoescape off %}
+        {{ plot4|safe }}
+        {% endautoescape %}
+        <h2>Corrélation entre la durée, l'année de sortie et la note moyenne des films</h2>
+        {% autoescape off %}
+        {{ plot|safe }}
+        {% endautoescape %}
+        <h2>Durée moyenne des films par réalisateur (en minutes)</h2>
+        {% autoescape off %}
+        {{ plot2|safe }}
+        {% endautoescape %}
+        <h2>Genres les plus représentés parmi les genres les mieux notés</h2>
+        {% autoescape off %}
+        {{ plot3|safe }}
+        {% endautoescape %}
+      </div>
+    </div>
+    
 </body>
 </html>

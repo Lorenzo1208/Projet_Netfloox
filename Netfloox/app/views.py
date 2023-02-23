@@ -12,6 +12,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.io as pio
+from plotly.offline import plot
 import pickle
 from sklearn.preprocessing import LabelEncoder
 import base64
@@ -30,8 +31,49 @@ def home(request):
     return render(request, 'home.html')
 
 def analyses(request):
+    
+    data = {'Type': ['short', 'movie', 'tvSeries', 'tvShort', 'tvMovie', 'tvEpisode', 'MiniSeries', 'tvSpecial', 'video', 'videoGame'], 
+        'Values': [912188, 634638, 238073, 9923, 140297, 7262412, 47097, 40390, 270104, 33433]}
+    df = pd.DataFrame(data)
+    fig4 = px.pie(df, values='Values', names='Type', width=1000, height=500)
+    
+    data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
+    data = data.head(1000)
+    df_drop_outliers = data.drop(data[data['runtimeMinutes'] > 2500].index)
+    print(df_drop_outliers.columns)
+    fig = px.scatter_matrix(df_drop_outliers,
+    dimensions=["runtimeMinutes","startYear","averageRating"], color="averageRating", width=1000, height=500)
+    
+    data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
+    df_director = data.groupby(['director']).mean()
+    df_director['nombre_observations'] = data['director'].value_counts()
+    df_director_top = df_director[['runtimeMinutes', 'startYear', 'averageRating', 'nombre_observations']].loc[df_director['nombre_observations'] >= 10].sort_values('averageRating', ascending=False).head(15)
+    df_director_bottom = df_director[['runtimeMinutes', 'startYear', 'averageRating', 'nombre_observations']].loc[df_director['nombre_observations'] >= 10].sort_values('averageRating', ascending=False).tail(15)
+    df_director_top.reset_index(inplace=True)
+    df_director_bottom.reset_index(inplace=True)
+    df_director = pd.concat([df_director_top, df_director_bottom])
+    fig2 = px.bar(df_director, x='director', y='runtimeMinutes',hover_data=['runtimeMinutes', 'averageRating'], color='director', width=1000, height=500)
+    fig2.add_vline(x=14.5, line_dash="dash", line_color="red")
+    fig2.add_hline(y=100, line_dash="dash", line_color="blue")
+    
+    data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
+    df_genres = data.groupby(['genres']).mean()
+    df_genres['nombre_observations'] = data['genres'].value_counts()
+    df_genres = df_genres[['averageRating', 'nombre_observations']].loc[df_genres['nombre_observations'] >= 10].sort_values('averageRating', ascending=False)
+    df_genres = df_genres.head(15)
+    df_genre = df_genres.reset_index()
+    vectorizer = CountVectorizer()
+    tokens = vectorizer.fit_transform(df_genre['genres'])
+    df_tokens = pd.DataFrame(tokens.toarray(), columns=vectorizer.get_feature_names_out())
+    df_top_genre = df_tokens.sum().sort_values(ascending=False)
+    df_top_genre = pd.DataFrame(df_top_genre)
+    fig3 = px.bar(df_top_genre, x=df_top_genre[0].index, y=df_top_genre[0].values, width=1000, height=500, color=df_top_genre[0].values)
+    fig3.update_layout(
+    xaxis_title='13 premiers Genres',
+    yaxis_title="Nombre d'occurences"
+)
 
-    return render(request, 'analyses.html')
+    return render(request, 'analyses.html', context={'plot': plot(fig, output_type='div'),'plot2': plot(fig2, output_type='div'),'plot3': plot(fig3, output_type='div'), 'plot4': plot(fig4, output_type='div')})
 
 def score(request):
     if request.method == 'POST':
