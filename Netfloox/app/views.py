@@ -219,5 +219,33 @@ def recommandation(request):
 
     return render(request, 'recommandation.html', context)
 
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
+
+def login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        # Create a new User object and save it to the database
+        user = User.objects.create_user(email, email, password)
+        
+        # You can add additional user information by modifying the User object
+        # For example, user.first_name = "John" and user.last_name = "Doe"
+        # Then call user.save() to save the changes to the database
+        
+        # Redirect the user back to the login page
+        return redirect(reverse('login'))
+    else:
+        return render(request, 'login.html')
+
+
 
 
