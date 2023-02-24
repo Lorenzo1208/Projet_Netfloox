@@ -39,18 +39,24 @@ def analyses(request):
     fig4.update_layout(
     plot_bgcolor='black',
     paper_bgcolor='black',
+    font=dict(
+        color='white'
+    )
 )
 
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     data = data.head(1000)
-    df_drop_outliers = data.drop(data[data['runtimeMinutes'] > 2500].index)
+    df_drop_outliers = data.drop(data[data['runtimeMinutes'] > 1000].index)
     print(df_drop_outliers.columns)
     fig = px.scatter_matrix(df_drop_outliers,
     dimensions=["runtimeMinutes","startYear","averageRating"], color="averageRating", width=1000, height=500)
     fig.update_layout(
     plot_bgcolor='black',
-    paper_bgcolor='black',)
+    paper_bgcolor='black',
+    font=dict(
+        color='white'
+    ))
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     df_director = data.groupby(['director']).mean()
@@ -65,7 +71,10 @@ def analyses(request):
     fig2.add_hline(y=100, line_dash="dash", line_color="blue")
     fig2.update_layout(
     plot_bgcolor='black',
-    paper_bgcolor='black',)
+    paper_bgcolor='black',
+    font=dict(
+        color='white'
+    ))
     
     data = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv', encoding='utf-8')
     df_genres = data.groupby(['genres']).mean()
@@ -84,6 +93,9 @@ def analyses(request):
     yaxis_title="Nombre d'occurences",
     plot_bgcolor='black',
     paper_bgcolor='black',
+    font=dict(
+        color='white'
+    )
 )
 
     return render(request, 'analyses.html', context={'plot': plot(fig, output_type='div'),'plot2': plot(fig2, output_type='div'),'plot3': plot(fig3, output_type='div'), 'plot4': plot(fig4, output_type='div')})
