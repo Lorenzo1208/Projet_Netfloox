@@ -1,6 +1,6 @@
 # Projet_Netfloox
-# Trello https://trello.com/invite/b/t30wOKVq/ATTI6a5db96a0e6037e53f916002fb10729dE46C7D33/projet-netfloox
-# Diapo https://docs.google.com/presentation/d/1_EoeHIMV8HF1E5UTIEvuz9Iu-HZVaBbgyljHkBkBvPw/edit?usp=sharing
+[Trello](https://trello.com/invite/b/t30wOKVq/ATTI6a5db96a0e6037e53f916002fb10729dE46C7D33/projet-netfloox) 📌
+[Diapo](https://docs.google.com/presentation/d/1_EoeHIMV8HF1E5UTIEvuz9Iu-HZVaBbgyljHkBkBvPw/edit?usp=sharing) 🖼️
 
 ## Le dossier Netfloox contient toute la partie Django.
 
