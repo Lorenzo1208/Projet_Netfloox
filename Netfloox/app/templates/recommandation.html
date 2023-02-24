@@ -246,7 +246,8 @@
       $(function() {
           var availableMovies = [{% for film in les_films %}"{{ film }}",{% endfor %}];
           $("#movie").autocomplete({
-              source: availableMovies
+              source: availableMovies,
+              delay : 800,
           });
       });
   </script>
