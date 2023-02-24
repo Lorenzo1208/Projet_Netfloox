@@ -195,6 +195,7 @@ def recommandation(request):
     posters = []
     for movie in movies:
         posters.append(movie[2])
+         
 
     context = {
         'movies': movies,

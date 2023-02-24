@@ -67,7 +67,6 @@
         input[type="text"] {
             padding: 10px;
             font-size: 16px;
-            border: 1px solid #ccc;
             border-radius: 5px;
             outline: none;
         }
@@ -93,15 +92,11 @@
         li {
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             font-size: 16px;
         }
         
-        li:first-child {
-            font-weight: bold;
-        }
         
         p {
             padding: 10px;
@@ -181,6 +176,23 @@
             font-family: 'Bebas Neue', sans-serif;
             font-size: 40px;
         }
+
+        img.movie-poster {
+        transition: transform 0.2s;
+        }
+        
+        img.movie-poster:hover {
+        transform: scale(1.1);
+        }
+
+        img {
+        transition: transform 0.2s;
+        }
+        
+        img:hover {
+            transform: scale(1.1);
+        }
+    
     </style>
     <meta charset="utf-8">
     <title>Film similaires</title>
