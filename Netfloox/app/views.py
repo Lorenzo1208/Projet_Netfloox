@@ -103,15 +103,20 @@ def analyses(request):
 
 
 def score(request):
-    if request.method == 'POST':
+    df_director_actor = pd.read_csv('https://raw.githubusercontent.com/Lorenzo1208/Projet_Netfloox/main/knn_features_names.csv')
+    directors = df_director_actor['director']
+    directors = directors.drop_duplicates()
+    les_acteurs = df_director_actor['actor']
+    les_acteurs = les_acteurs.drop_duplicates()
+    if request.method == 'GET':
         # Collect the user inputs from the form
-        title = request.POST.get('title', '')
-        genres = request.POST.get('genres', '')
-        actor = request.POST.get('actor', '')
-        director = request.POST.get('director', '')
-        runtime = request.POST.get('runtime', '')
-        year = request.POST.get('year', '')
-
+        title = request.GET.get('title', '')
+        genres = request.GET.get('genres', '')
+        actor = request.GET.get('actor', '')
+        director = request.GET.get('director', '')
+        runtime = request.GET.get('runtime', '')
+        year = request.GET.get('year', '')
+        
         # Check if runtime and year are valid integers
         try:
             if runtime:
@@ -119,11 +124,11 @@ def score(request):
             if year:
                 year = int(year)
         except ValueError:
-            return render(request, 'score.html', {'error': 'Please enter valid runtime and year.'})
+            return render(request, 'score.html', {'error': 'Please enter valid runtime and year.'}, {'directors': directors})
 
         # Check if title, genres, actor, and director are valid strings
         if not isinstance(title, str) or not isinstance(genres, str) or not isinstance(actor, str) or not isinstance(director, str):
-            return render(request, 'score.html', {'error': 'Please enter valid inputs for title, genres, actor, and director.'})
+            return render(request, 'score.html', {'error': 'Please enter valid inputs for title, genres, actor, and director.'}, {'directors': directors})
 
         # Create a DataFrame using the user inputs
         test_data = pd.DataFrame({
@@ -150,9 +155,9 @@ def score(request):
         y_pred = grid.predict(X)
 
         # Pass the prediction to the template
-        return render(request, 'score.html', {'prediction': y_pred[0]})
+        return render(request, 'score.html', {'prediction': y_pred[0], 'directors': directors, 'les_acteurs': les_acteurs})
 
-    return render(request, 'score.html')
+    return render(request, 'score.html', {'directors': directors, 'les_acteurs': les_acteurs})
 
 def load_data(csv_file):
     return pd.read_csv(csv_file, encoding='utf-8')
